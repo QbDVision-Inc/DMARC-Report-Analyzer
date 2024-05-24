@@ -172,10 +172,10 @@ def analyze_dmarc_reports(directory):
             failed_both = df_failed[(df_failed['spf_result'] == 'fail') & (df_failed['dkim_result'] == 'fail')][
                 'count'].sum()
 
-            logging.info(f"Total emails: {total_emails}") # Numbers, numbers everywhere
-            logging.info(f"Emails failed SPF: {failed_spf}") # SPF failure party
-            logging.info(f"Emails failed DKIM: {failed_dkim}") # DKIM failure fiesta
-            logging.info(f"Emails failed both SPF and DKIM: {failed_both}") # Double the fun, double the failure
+            logging.info(f"Total emails: {total_emails}")  # Numbers, numbers everywhere
+            logging.info(f"Emails failed SPF: {failed_spf}")  # SPF failure party
+            logging.info(f"Emails failed DKIM: {failed_dkim}")  # DKIM failure fiesta
+            logging.info(f"Emails failed both SPF and DKIM: {failed_both}")  # Double the fun, double the failure
 
             # Calculate the number and ratio of emails lost if DMARC had p=reject
             total_failed = df_failed['count'].sum()
@@ -189,7 +189,7 @@ def analyze_dmarc_reports(directory):
             lost_emails_both = failed_both
 
             # Calculate total emails lost because of blacklisting
-            logging.info("Checking blacklists for IP addresses...") # Let's see who's been naughty
+            logging.info("Checking blacklists for IP addresses...")  # Let's see who's been naughty
             total_blacklisted_emails = 0
             blacklists = [SPAMHAUS_DOMAIN]
             df_failed['blacklisted'] = False
@@ -242,7 +242,7 @@ def analyze_dmarc_reports(directory):
             # Save the dataframe to a CSV file for further analysis if needed
             output_file = os.path.join(os.getcwd(), 'dmarc_report_analysis.csv')
             df_failed.to_csv(output_file, index=False)
-            logging.info(f"Analysis complete. Results saved to {output_file}") # And they say miracles don't happen
+            logging.info(f"Analysis complete. Results saved to {output_file}")  # And they say miracles don't happen
 
             # Ask user if they want to open the CSV and Summary file
             open_csv = input("Do you want to open the CSV and Summary file? (yes/no): ").strip().lower()
@@ -256,10 +256,10 @@ def analyze_dmarc_reports(directory):
 
             return df_failed
         else:
-            logging.info("No records found that fail SPF or DKIM.") # All clear, folks!
+            logging.info("No records found that fail SPF or DKIM.")  # All clear, folks!
             return None
     else:
-        logging.warning("No valid DMARC records found.") # Well, that was disappointing
+        logging.warning("No valid DMARC records found.")  # Well, that was disappointing
         return None
 
 
