@@ -1,0 +1,4 @@
+pandas
+dnspython
+pyspf
+tqdm
