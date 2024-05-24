@@ -1,56 +1,75 @@
 # DMARC Report Analyzer
 
-## Introduction
-
 Welcome to the DMARC Report Analyzer! 
-This little script will sift through your DMARC reports like a prospector panning for gold. 
+This little gem is your one-stop-shop for parsing, analyzing, and reporting on DMARC reports, with the added bonus of 
+fetching these reports directly from your email. 
+Think of it like a Swiss Army knife, but for email security nerds. 
+And like all good Swiss Army knives, it's sharp, versatile, and slightly dangerous if handled improperly.
 
-It's going to parse, extract, and analyze those reports, and when it's all done, it'll give you a shiny CSV file.
+## Features
 
-So, grab a drink, sit back, and let this script do the heavy lifting.
+- **Parse and Analyze DMARC Reports**: Because deciphering XML files manually is about as fun as a root canal.
+- **Download Attachments from Email**: Automatically fetch DMARC reports from your email account. Supports both basic authentication and OAuth2 for those fancy MFA setups.
+- **Detailed Reporting**: Calculates the number and ratio of emails that would be lost if DMARC had p=reject. Also tells you which IPs are blacklisted, because who doesn't love a good blacklist?
+- **CSV and Summary Output**: Save your analysis results to a CSV file and a summary text file. Perfect for impressing your boss or confusing your enemies.
 
-## What It Does
+## Installation
 
-This script will:
-1. **Scan your directory** for any DMARC report files. It can handle `.xml`, `.gz`, and `.zip` files, because we like to cover all bases.
-2. **Parse the reports** and extract the important stuff. Think of it like Antonio in foreign land looking for where to drink Guinness.
-3. **Analyze the data** to find out which emails failed SPF, DKIM, or both.
-4. **Check blacklists** for IP addresses that have been naughty. We’ll see who’s on the blacklist, just like Santa.
-5. **Generate a CSV file** with all the juicy details and ask if you want to open it. Because we care about your user experience.
+First, clone this repository to your local machine. You know the drill:
 
-## How It Works
-
-1. **Requirements**:
-   - Make sure you have `Python 3.x` installed. If you don’t, you’re going to have a bad time.
-   - Install the required libraries by running: `pip install -r requirements.txt`
-   - Spamhouse Query key
-
-2. **Running the Script**:
-   - Place your DMARC report files in a directory and call it `dmarc_check`.
-   - Update the script at line 18 where you add the Spamhouse query key
-   - Open your terminal or command prompt.
-   - Navigate to the directory where the script is located.
-   - Run the script by typing: `python dmarc_report_analyzer.py`
-   - Sit back, relax, and enjoy a beverage of your choice. The script will take care of the rest.
-
-3. **Output**:
-   - The script will create a CSV file named `dmarc_report_analysis.csv` in the current working directory.
-   - It will log the progress and results, showing you the path to the final CSV file.
-   - You’ll be prompted if you want to open the CSV file. Type `yes` if you do, or `no` if you want to keep the suspense.
-
-## Example Usage
-
-Here’s a quick rundown of how to use the script:
-
-```sh
-# Navigate to your script directory
-cd path/to/your/script
-
-# Run the script
-python dmarc_report_analyzer.py
+```bash
+git clone https://github.com/yourusername/dmarc-report-analyzer.git
+cd dmarc-report-analyzer
+# Optional 
+python3 -m venv env
+source env/bin/activate  # On Windows use `env\Scripts\activate`
+# Mandatory
+pip install -r requirements.txt
 ```
 
-## Contact
-If you run into any issues or have any questions, you’re probably not alone. 
+## Configuration
+Before you run the analyzer, you'll need to set up your configuration file. 
+Because nothing says "I'm ready to analyze" like a well-configured `config.ini`.
 
-Feel free to reach out !
+```bash
+cd config/
+cp config.ini.example config.ini
+```
+
+Open the config.ini with your favourite editor and fill all the fields :)
+
+### Tips
+#### Spamhaus
+- Visit this page https://www.spamhaus.com/free-trial/sign-up-for-a-free-data-query-service-account/
+- Once you registered and confirmed your account go to https://portal.spamhaus.com/
+- Go to Products -> DQS
+- Here you will find your **Query Key**
+#### Gmail and Password
+- Visit https://myaccount.google.com/
+- Click on **Security** (on left menu)
+- Go to **How you sign in to Google** part and click on **2-Step Verification**
+- Scroll down to **App Password** and add one for this script 
+- Copy and paste in the config the password
+
+## Usage
+To run the analyzer, simply execute the main.py script. It will ask if you want to download DMARC reports from an email account, and then proceed to analyze the reports in the specified directory.
+
+```bash
+python main.py
+```
+
+## Example
+Here's a quick rundown of what you'll see:
+
+- The script will ask if you want to download DMARC reports from an email account.
+- If you say "yes", it will fetch the reports and save them in the dmarc_check directory.
+- It will then analyze the reports and produce a summary of emails that failed SPF/DKIM checks, blacklisted IPs, and the potential impact if DMARC had p=reject.
+- Results are saved to dmarc_report_analysis.csv and summary.txt because we believe in both precision and verbosity.
+
+## License
+This project is licensed under the MIT License. Because sharing is caring.
+
+## Disclaimer
+This tool is provided as-is, without any guarantees. Use at your own risk. Side effects may include enhanced email security knowledge and a sudden appreciation for XML parsing.
+
+Remember, folks, if you don't document it, it didn't happen. So keep those logs handy and those configs tight. Happy analyzing!
