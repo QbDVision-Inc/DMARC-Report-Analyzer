@@ -1,0 +1,18 @@
+[spamhaus]
+query_key = XXXX
+domain = zen.dq.spamhaus.net
+
+[email]
+imap_server = imap.gmail.com
+email_user = your@mail.com
+
+; Please, use an app password for non-MFA
+email_pass = password
+
+; Set to true if using MFA and OAuth2
+use_mfa = false
+
+credentials_json = vault/credentials.json
+token_json = vault/token.json
+scopes = https://mail.google.com/
+redirect_uri = YOUR_OAUTH_REDIRECT_URI

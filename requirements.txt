@@ -1,4 +1,8 @@
 pandas
+tqdm
 dnspython
 pyspf
-tqdm
+configparser
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
