@@ -18,7 +18,7 @@ And like all good Swiss Army knives, it's sharp, versatile, and slightly dangero
 First, clone this repository to your local machine. You know the drill:
 
 ```bash
-git clone https://github.com/yourusername/dmarc-report-analyzer.git
+git clone https://github.com/QbDVision-Inc/DMARC-Report-Analyzer
 cd dmarc-report-analyzer
 # Optional 
 python3 -m venv env
