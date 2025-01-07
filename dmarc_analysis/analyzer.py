@@ -1,3 +1,4 @@
+from datetime import datetime
 import platform
 import subprocess
 import xml.etree.ElementTree as ET
@@ -32,6 +33,12 @@ class DMARCAnalyzer:
         try:
             tree = ET.parse(file_path)
             root = tree.getroot()
+            # Extract the date_range information
+            date_range_elem = root.find('.//date_range')
+            begin = date_range_elem.find('begin').text if date_range_elem is not None and date_range_elem.find(
+                'begin') is not None else None
+            end = date_range_elem.find('end').text if date_range_elem is not None and date_range_elem.find(
+                'end') is not None else None
 
             records = []
             for record in root.findall('.//record'):
@@ -58,7 +65,9 @@ class DMARCAnalyzer:
                         'spf_result': spf_result,
                         'dkim_result': dkim_result,
                         'header_from': header_from,
-                        'envelope_from': envelope_from
+                        'envelope_from': envelope_from,
+                        'report_begin': begin,
+                        'report_end': end
                     })
             return records
         except ET.ParseError:
@@ -236,6 +245,24 @@ class DMARCAnalyzer:
                     f"Total emails lost due to blacklisting: {total_blacklisted_emails}\n"
                 )
 
+                unique_date_ranges = df_failed[['report_begin', 'report_end']].drop_duplicates()
+
+                date_ranges_text = "Report Periods Covered:\n"
+                for _, row in unique_date_ranges.iterrows():
+                    try:
+                        begin_ts = int(row['report_begin']) if row['report_begin'] is not None else None
+                        end_ts = int(row['report_end']) if row['report_end'] is not None else None
+                        begin_str = datetime.fromtimestamp(begin_ts).strftime(
+                            "%Y-%m-%d %H:%M:%S") if begin_ts else "N/A"
+                        end_str = datetime.fromtimestamp(end_ts).strftime("%Y-%m-%d %H:%M:%S") if end_ts else "N/A"
+                    except (ValueError, TypeError):
+                        begin_str = row['report_begin'] or "N/A"
+                        end_str = row['report_end'] or "N/A"
+
+                    date_ranges_text += f" - From: {begin_str} To: {end_str}\n"
+
+                summary += "\n" + date_ranges_text
+
                 print(summary)
 
                 # Save the summary to a text file
@@ -246,6 +273,17 @@ class DMARCAnalyzer:
 
                 # Save the dataframe to a CSV file for further analysis if needed
                 output_file = os.path.join(os.getcwd(), 'dmarc_report_analysis.csv')
+                # Convert date range columns to readable format if they exist
+                if not df_failed.empty and 'report_begin' in df_failed.columns and 'report_end' in df_failed.columns:
+                    df_failed['report_begin_readable'] = df_failed['report_begin'].apply(
+                        lambda x: datetime.fromtimestamp(int(x)).strftime("%Y-%m-%d %H:%M:%S") if pd.notnull(
+                            x) and x.isdigit() else "N/A"
+                    )
+                    df_failed['report_end_readable'] = df_failed['report_end'].apply(
+                        lambda x: datetime.fromtimestamp(int(x)).strftime("%Y-%m-%d %H:%M:%S") if pd.notnull(
+                            x) and x.isdigit() else "N/A"
+                    )
+
                 df_failed.to_csv(output_file, index=False)
                 logging.info(f"Analysis complete. Results saved to {output_file}")
 
