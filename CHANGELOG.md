@@ -1,6 +1,9 @@
 # CHANGELOG
 
 
+## v0.4.0 (2025-01-07)
+
+
 ## v0.3.0 (2025-01-07)
 
 ### Chores
@@ -9,6 +12,9 @@
   ([`a5848d1`](https://github.com/QbDVision-Inc/DMARC-Report-Analyzer/commit/a5848d1675286c5e8635eac3e9c4cec5e5415b14))
 
 ### Features
+
+- Added new aggregated final report
+  ([`d1dae31`](https://github.com/QbDVision-Inc/DMARC-Report-Analyzer/commit/d1dae31d58a0535097678c277eb032ec47011673))
 
 - Added parsing and show of report dates
   ([`28b16d0`](https://github.com/QbDVision-Inc/DMARC-Report-Analyzer/commit/28b16d0329b159e933241d7d728d8b3136869055))
