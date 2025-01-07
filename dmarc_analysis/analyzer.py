@@ -273,6 +273,7 @@ class DMARCAnalyzer:
 
                 # Save the dataframe to a CSV file for further analysis if needed
                 output_file = os.path.join(os.getcwd(), 'dmarc_report_analysis.csv')
+                aggregated_output_file = os.path.join(os.getcwd(), 'dmarc_report_analysis_aggregated.csv')
                 # Convert date range columns to readable format if they exist
                 if not df_failed.empty and 'report_begin' in df_failed.columns and 'report_end' in df_failed.columns:
                     df_failed['report_begin_readable'] = df_failed['report_begin'].apply(
@@ -287,15 +288,44 @@ class DMARCAnalyzer:
                 df_failed.to_csv(output_file, index=False)
                 logging.info(f"Analysis complete. Results saved to {output_file}")
 
+                # Create an aggregated DataFrame grouped by report_begin and report_end
+                if not df_failed.empty:
+                    aggregation_functions = {
+                        'count': 'sum',
+                        'spf_result': lambda x: ','.join(x.unique()),
+                        'dkim_result': lambda x: ','.join(x.unique()),
+                        'blacklisted': 'max',
+                        # Add other columns and their aggregation as needed
+                    }
+
+                    aggregated_df = df_failed.groupby(['report_begin', 'report_end'], as_index=False).agg(
+                        aggregation_functions)
+
+                    aggregated_df['report_begin_readable'] = aggregated_df['report_begin'].apply(
+                        lambda x: datetime.fromtimestamp(int(x)).strftime("%Y-%m-%d %H:%M:%S") if pd.notnull(x) and str(
+                            x).isdigit() else "N/A"
+                    )
+                    aggregated_df['report_end_readable'] = aggregated_df['report_end'].apply(
+                        lambda x: datetime.fromtimestamp(int(x)).strftime("%Y-%m-%d %H:%M:%S") if pd.notnull(x) and str(
+                            x).isdigit() else "N/A"
+                    )
+
+
+                    aggregated_df.to_csv(aggregated_output_file, index=False)
+                    logging.info(f"Aggregated analysis complete. Results saved to {aggregated_output_file}")
+
                 # Ask user if they want to open the CSV and Resume file
                 open_csv = input("Do you want to open the CSV and Resume file? (yes/no): ").strip().lower()
                 if open_csv == 'yes':
                     if platform.system() == 'Windows':
                         os.startfile(output_file)
+                        os.startfile(aggregated_output_file)
                     elif platform.system() == 'Darwin':  # macOS
                         subprocess.call(['open', output_file])
+                        subprocess.call(['open', aggregated_output_file])
                     else:  # Linux and other OS
                         subprocess.call(['xdg-open', output_file])
+                        subprocess.call(['open', aggregated_output_file])
 
                 return df_failed
             else:
