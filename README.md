@@ -3,6 +3,12 @@
 Welcome to the DMARC Report Analyzer! 
 This little gem is your one-stop-shop for parsing, analyzing, and reporting on DMARC reports, with the added bonus of 
 fetching these reports directly from your email. 
+
+BUT if you don't like to put email and password into a script, i feel you.
+
+So, just put your files inside the folder `dmarc_checks` and when asked to connect simply say "no".
+
+
 Think of it like a Swiss Army knife, but for email security nerds. 
 And like all good Swiss Army knives, it's sharp, versatile, and slightly dangerous if handled improperly.
 
@@ -62,6 +68,7 @@ python main.py
 Here's a quick rundown of what you'll see:
 
 - The script will ask if you want to download DMARC reports from an email account.
+- If you say no to the question above it will check files inside the `dmarc_checks`
 - If you say "yes", it will fetch the reports and save them in the dmarc_check directory.
 - It will then analyze the reports and produce a summary of emails that failed SPF/DKIM checks, blacklisted IPs, and the potential impact if DMARC had p=reject.
 - Results are saved to dmarc_report_analysis.csv and summary.txt because we believe in both precision and verbosity.

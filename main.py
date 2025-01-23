@@ -19,6 +19,10 @@ token_json = config.get('email', 'token_json')
 scopes = config.get('email', 'scopes')
 redirect_uri = config.get('email', 'redirect_uri')
 
+print("")
+print("ATTENTION: saying 'no' to the next question will make")
+print("the script look for files inside the dmarc_checks folder")
+print("")
 # Ask user if they want to download DMARC reports from email
 download_from_email = input("Do you want to download DMARC reports from an email account? (yes/no): ").strip().lower()
 if download_from_email == 'yes':
