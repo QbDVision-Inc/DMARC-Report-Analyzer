@@ -25,7 +25,7 @@ First, clone this repository to your local machine. You know the drill:
 
 ```bash
 git clone https://github.com/QbDVision-Inc/DMARC-Report-Analyzer
-cd dmarc-report-analyzer
+cd DMARC-Report-Analyzer
 # Optional 
 python3 -m venv env
 source env/bin/activate  # On Windows use `env\Scripts\activate`
