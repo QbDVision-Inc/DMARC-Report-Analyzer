@@ -187,6 +187,8 @@ class DMARCAnalyzer:
                 failed_dkim = df_failed[df_failed['dkim_result'] == 'fail']['count'].sum()
                 failed_both = df_failed[(df_failed['spf_result'] == 'fail') & (df_failed['dkim_result'] == 'fail')][
                     'count'].sum()
+                failed_either = df_failed[(df_failed['spf_result'] == 'fail') | (df_failed['dkim_result'] == 'fail')][
+                    'count'].sum()
 
                 logging.info(f"Total emails: {total_emails}")  # Numbers, numbers everywhere
                 logging.info(f"Emails failed SPF: {failed_spf}")  # SPF failure party
@@ -195,8 +197,8 @@ class DMARCAnalyzer:
 
                 # Calculate the number and ratio of emails lost if DMARC had p=reject
                 total_failed = df_failed['count'].sum()
-                lost_emails_ratio = total_failed / total_emails if total_emails > 0 else 0
-                logging.info(f"Total emails that would have been lost with DMARC p=reject: {total_failed}")
+                lost_emails_ratio = failed_both / total_emails if total_emails > 0 else 0
+                logging.info(f"Total emails that would have been lost with DMARC p=reject: {failed_both}")
                 logging.info(f"Ratio of emails that would have been lost with DMARC p=reject: {lost_emails_ratio:.2%}")
 
                 # Calculate lost emails due to each specific failure
@@ -237,11 +239,11 @@ class DMARCAnalyzer:
                 # Print report
                 summary = (
                     f"Total emails: {total_emails}\n"
-                    f"Emails that would have been lost if DMARC had p=reject: {total_failed}\n"
+                    f"Total emails with alignment errors: {failed_either}\n"
+                    f"Emails that fail SPF alignment: {lost_emails_spf}\n"
+                    f"Emails that fail DKIM alignment: {lost_emails_dkim}\n"
+                    f"Emails that fail both SPF and DKIM and would be rejected with DMARC p=reject: {lost_emails_both}\n"
                     f"Ratio of emails that would have been lost if DMARC had p=reject: {lost_emails_ratio:.2%}\n"
-                    f"Emails lost due to SPF failure: {lost_emails_spf}\n"
-                    f"Emails lost due to DKIM failure: {lost_emails_dkim}\n"
-                    f"Emails lost due to both SPF and DKIM failure: {lost_emails_both}\n"
                     f"Total emails lost due to blacklisting: {total_blacklisted_emails}\n"
                 )
 
